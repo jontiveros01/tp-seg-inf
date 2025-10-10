@@ -12,17 +12,21 @@ import requests
 API_BASE_URL = "http://localhost:8080"
 
 
-@click.group()
-def cli():
-    """🍯 Honey Token CLI - Generates honey tokens to detect intrusions."""
-    pass
+@click.command()
+@click.option("--type", "-t", "token_type", type=click.Choice(["qr"]), default="qr", help="Type of token to generate")
+@click.option("--message", "-m", required=True, help="Message or payload to embed (QR) or describe (SVG)")
+@click.option("--output", "-o", required=True, default=None, help="Output file path (PNG for qr, .svg for svg).")
+def generate(token_type, message, output):
+    """Generate a honeytoken of specified type with a personalized message"""
+    if token_type == "qr":
+        qr(message, output)
+    elif token_type == "other":
+        #generate_other_token(message, output)
+        return
+    else:
+        click.echo(f"✗ Unsupported token type: {token_type}", err=True)
 
 
-@cli.command()
-@click.option("--message", "-m", required=True, help="QR message to show")
-@click.option(
-    "--output", "-o", default="./honey_qr.png", help="Path for the output file"
-)
 def qr(message, output):
     """Generate a QR honeytoken with a personalized message"""
 
@@ -68,5 +72,6 @@ def qr(message, output):
     click.echo(f"✓ QR generated: {output_path}")
 
 
+
 if __name__ == "__main__":
-    cli()
+    generate()
