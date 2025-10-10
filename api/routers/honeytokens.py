@@ -112,14 +112,14 @@ async def alert_token_accessed(token_uuid: str, request: Request):
         logger.warning(f"Token type:      {token_info['token_type']}")
         logger.warning(f"Message:         {token_info.get('message', 'N/A')}")
     else:
-        logger.warning("⚠️  Token not found un database")
+        logger.warning("⚠️  Token not found in database")
     logger.warning("=" * 70)
 
     return {
         "status": "ok",
         "message": (
-            token_info.get("message", "Acceso registrado")
+            token_info.get("message", "Registered Access")
             if token_info
-            else "Acceso registrado"
+            else "Registered Access"
         ),
     }
