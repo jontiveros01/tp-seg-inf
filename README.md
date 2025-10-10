@@ -23,3 +23,15 @@ If you are developing new features, be sure to record all dependencies in the [r
 3. Update the `requirements.txt` file: `pip freeze > requirements.txt`
 
 Do not forget to apply code formatter: `black . && isort .`
+
+## Generate HoneyTokens (Prerequisite: The server must be running)
+
+### QR Honey Tokens
+
+There are two ways to generate a QR honey token:
+
+1. Without specifying an output path (default path: `./honey_qr.png`):
+   `python honey_cli.py qr -m "TOP SECRET Document"`
+
+2. With a custom output path:
+   `python honey_cli.py qr -m "TOP SECRET Document" --output ./document3.png`
