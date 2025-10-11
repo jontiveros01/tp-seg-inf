@@ -18,7 +18,7 @@ There are two ways to run the API locally: using python (with a virtual environm
 
 ## 👨‍💻 Devs
 If you are developing new features, be sure to record all dependencies in the [requirements.txt](./requirements.txt) file. You can follow the steps below if you are not familiar with python:
-1. Make sure you are in the active virtual environment, if you don't know how to do this, go [here](#using-python) (steps 1 and 2)
+1. Make sure you are in the active virtual environment, if you don't know how to do this, go [here](#🐍-using-python) (steps 1 and 2)
 2. Install all new dependencies if you haven't already: `pip install dep1 dep2 ...`
 3. Update the `requirements.txt` file: `pip freeze > requirements.txt`
 
