@@ -1,22 +1,24 @@
-# 🍯 Honeytokens Manager API
+# TokenSnare - HoneyTokens Implementation
+
+## 💻 Management (API)
 
 This API has been designed to manage honeytokens, both to register new tokens and to receive their callbacks.
 
-## 🕹️ Execution Instructions
+### 🕹️ Execution Instructions
 
 There are two ways to run the API locally: using python (with a virtual environment) or using docker.
 
-### 🐍 Using Python
+#### 🐍 Using Python
 1. Create venv: `python3 -m venv venv`
 2. Activate venv: `source ./venv/bin/activate`
 3. Install dependencies: `pip install -r requirements.txt`
 4. Run application: `python3 api/main.py`
 
-### 🐳 Using Docker
+#### 🐳 Using Docker
 1. Build docker image: `docker build -t honeytokens-manager-api .`
 2. Run docker image: `docker run -p 8080:8080 honeytokens-manager-api`
 
-## 👨‍💻 Devs
+### 👨‍💻 Devs
 If you are developing new features, be sure to record all dependencies in the [requirements.txt](./requirements.txt) file. You can follow the steps below if you are not familiar with python:
 1. Make sure you are in the active virtual environment, if you don't know how to do this, go [here](#🐍-using-python) (steps 1 and 2)
 2. Install all new dependencies if you haven't already: `pip install dep1 dep2 ...`
@@ -24,14 +26,11 @@ If you are developing new features, be sure to record all dependencies in the [r
 
 Do not forget to apply code formatter: `black . && isort .`
 
-## Generate HoneyTokens (Prerequisite: The server must be running)
+## 🍯 HoneyTokens Generator (CLI)
 
-### QR Honey Tokens
+*Prerequisite: The server must be running.*
 
-There are two ways to generate a QR honey token:
+**Generator command:** `python3 cli/main.py -t [token-type] -m [message] -o [output_path]`
 
-1. Without specifying an output path (default path: `./honey_qr.png`):
-   `python honey_cli.py qr -m "TOP SECRET Document"`
-
-2. With a custom output path:
-   `python honey_cli.py qr -m "TOP SECRET Document" --output ./document3.png`
+**Possible values:**
+1. token-type: [QR]
