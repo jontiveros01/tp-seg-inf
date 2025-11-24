@@ -1,12 +1,11 @@
 import uuid
 from pathlib import Path
-
-import click
 import qrcode
 from settings import get_settings
+import tkinter.filedialog as fdialog
 
 
-def qr(message: str, output: str, uuid: uuid.UUID):
+def qr(uuid: uuid.UUID):
     """Generate a QR honeytoken with a personalized message"""
     alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{uuid}"
 
@@ -21,6 +20,6 @@ def qr(message: str, output: str, uuid: uuid.UUID):
 
     img = qr_obj.make_image(fill_color="black", back_color="white")
 
-    output_path = Path(output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    img.save(output_path)
+    result_file = fdialog.asksaveasfile()
+
+    img.save(result_file)

@@ -8,7 +8,7 @@ import click
 import requests
 from enums.token_type import TokenType
 from settings import get_settings
-from token_strategies.qr import qr
+from token_strategies import qr, pdf
 
 
 @click.command()
@@ -37,8 +37,11 @@ def generate(token_type: TokenType, message: str, output: str):
 
     _register_token(token_type, token_uuid, message)
 
-    if token_type == TokenType.QR:
-        qr(message, output, token_uuid)
+    match token_type:
+        case TokenType.QR:
+            qr(message, output, token_uuid)
+        case TokenType.PDF:
+            pdf(token_uuid)
 
     click.echo(
         f"🍯 Honeytoken {token_uuid} as {token_type} generated successfully in {output}"
