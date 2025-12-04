@@ -6,6 +6,7 @@ import json
 import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Optional
 from uuid import UUID
 import uuid
 
@@ -42,6 +43,7 @@ def save_json(path, data):
 
 class TokenRegister(BaseModel):
     token_type: str
+    message: Optional[str] = None
 
 
 @router.post("/register")
@@ -56,6 +58,7 @@ async def register_token(token: TokenRegister):
         "token_type": token.token_type,
         "registered_at": datetime.now(ARG_TZ).isoformat(),
         "triggered": False,
+        "message": token.message,
     }
 
     save_json(TOKENS_FILE, tokens_db)
@@ -82,7 +85,7 @@ async def alert_token_accessed(token_uuid: str, request: Request):
     alert = {
         "token_uuid": token_uuid,
         "accessed_from_ip": client_ip,
-        "accessed_at": datetime.utcnow().isoformat(),
+        "accessed_at": datetime.now(ARG_TZ).isoformat(),
         "user_agent": request.headers.get("user-agent", "unknown"),
         "referer": request.headers.get("referer", "none"),
         "accept_language": request.headers.get("accept-language", "unknown"),

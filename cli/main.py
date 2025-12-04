@@ -2,6 +2,7 @@
 Honey Token CLI - Generation System
 """
 
+from typing import Optional
 import uuid
 
 import click
@@ -21,12 +22,19 @@ from token_strategies.qr import qr
     type=click.Choice([t.value for t in TokenType]),
     help="Token type to generate",
 )
-def generate(token_type: TokenType):
+@click.option(
+    "--message",
+    "-m",
+    required=False,
+    default=None,
+    help="Message or payload to embed (QR)",
+)
+def generate(token_type: TokenType, message: Optional[str]):
     """Generate a honeytoken of specified parameters"""
 
     click.echo(f"🔄 Generating honeytoken for type {token_type}")
 
-    token_uuid = _register_token(token_type)
+    token_uuid = _register_token(token_type, message)
 
     match token_type:
         case TokenType.QR:
@@ -39,11 +47,12 @@ def generate(token_type: TokenType):
     )
 
 
-def _register_token(token_type: TokenType):
+def _register_token(token_type: TokenType, message: Optional[str]):
     click.echo(f"📥 Registering token in server...")
     try:
         register_payload = {
             "token_type": token_type,
+            "message": message,
         }
 
         response = requests.post(
