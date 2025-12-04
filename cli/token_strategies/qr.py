@@ -3,7 +3,8 @@ import uuid
 from pathlib import Path
 
 import qrcode
-from settings import get_settings
+
+from cli.settings import get_settings
 
 
 def qr(uuid: uuid.UUID):

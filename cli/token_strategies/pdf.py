@@ -1,9 +1,8 @@
-import datetime
-import os
 import tkinter.filedialog as fdialog
 import uuid
 
-from settings import get_settings
+from cli.settings import get_settings
+
 
 try:
     from pypdf import PdfReader, PdfWriter, generic

@@ -28,9 +28,27 @@ Do not forget to apply code formatter: `black . && isort .`
 
 ## 🍯 HoneyTokens Generator (CLI)
 
-*Prerequisite: The server must be running.*
+### To create a new honeytoken:
+- Make sure you are on the path `/tp-seg-inf`
+- Make sure you are running the API
+- Run the following command: `python3 -m cli.main generate [token-type] -param value`
 
-**Generator command:** `python3 cli/main.py -t [token-type] -m [message] -o [output_path]`
+### Token Types & CLI Parameters
 
-**Possible values:**
-1. token-type: [QR]
+The system supports multiple types of honeytokens, each with different customizations or parameters.
+
+| Token Type   | Command                  | Parameters                                |
+|--------------|--------------------------|-------------------------------------------|
+| `QR`         | `generate qr`            | `--message -m`                            |
+| `PDF`        | `generate pdf`           | -                                         |
+
+---
+
+### Examples of use
+```bash
+# QR token with optional message
+python3 -m cli.main generate qr -m "Page not found"
+
+# PDF token
+python3 -m cli.main generate pdf
+```
