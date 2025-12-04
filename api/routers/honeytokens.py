@@ -4,8 +4,10 @@ Router Honeytokens management
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from uuid import UUID
+import uuid
 
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
@@ -19,6 +21,8 @@ DATA_DIR = BASE_DIR / "data"
 TOKENS_FILE = DATA_DIR / "tokens.json"
 ALERTS_FILE = DATA_DIR / "alerts.json"
 DATA_DIR.mkdir(exist_ok=True)
+
+ARG_TZ = timezone(timedelta(hours=-3))
 
 
 def load_json(path):
@@ -37,9 +41,7 @@ def save_json(path, data):
 
 
 class TokenRegister(BaseModel):
-    token_uuid: str
     token_type: str
-    message: str
 
 
 @router.post("/register")
@@ -47,25 +49,21 @@ async def register_token(token: TokenRegister):
     """
     Register a new honeytoken in the system
     """
+    new_token_uuid = str(uuid.uuid4())
     tokens_db = load_json(TOKENS_FILE)
 
-    if token.token_uuid in tokens_db:
-        raise HTTPException(status_code=400, detail="Token ya existe")
-
-    tokens_db[token.token_uuid] = {
-        "token_uuid": token.token_uuid,
+    tokens_db[new_token_uuid] = {
         "token_type": token.token_type,
-        "registered_at": datetime.utcnow().isoformat(),
+        "registered_at": datetime.now(ARG_TZ).isoformat(),
         "triggered": False,
-        "message": token.message,
     }
 
     save_json(TOKENS_FILE, tokens_db)
     logger.info(
-        f"🍯 Nuevo token registrado: {token.token_uuid} (tipo: {token.token_type})"
+        f"🍯 Token type {token.token_type} registered successfully with UUID {new_token_uuid}"
     )
 
-    return {"status": "registered", "token_uuid": token.token_uuid}
+    return {"status": "registered", "token_uuid": new_token_uuid}
 
 
 @router.get("/alert/{token_uuid}")
