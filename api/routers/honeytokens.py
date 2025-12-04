@@ -4,11 +4,11 @@ Router Honeytokens management
 
 import json
 import logging
+import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 from uuid import UUID
-import uuid
 
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel

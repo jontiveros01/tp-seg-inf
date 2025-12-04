@@ -2,8 +2,8 @@
 Honey Token CLI - Generation System
 """
 
-from typing import Optional
 import uuid
+from typing import Optional
 
 import click
 import requests
@@ -66,9 +66,7 @@ def _register_token(token_type: TokenType, message: Optional[str]):
         return response.json()["token_uuid"]
 
     except requests.exceptions.RequestException as e:
-        raise click.ClickException(
-            f"❌ Failed to register token: {e}"
-        ) from e
+        raise click.ClickException(f"❌ Failed to register token: {e}") from e
 
 
 if __name__ == "__main__":

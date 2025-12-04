@@ -1,8 +1,9 @@
+import tkinter.filedialog as fdialog
 import uuid
 from pathlib import Path
+
 import qrcode
 from settings import get_settings
-import tkinter.filedialog as fdialog
 
 
 def qr(uuid: uuid.UUID):
@@ -21,8 +22,7 @@ def qr(uuid: uuid.UUID):
     img = qr_obj.make_image(fill_color="black", back_color="white")
 
     result_path = fdialog.asksaveasfilename(
-        defaultextension=".png",
-        filetypes=[("PNG image", "*.png")]
+        defaultextension=".png", filetypes=[("PNG image", "*.png")]
     )
 
     if result_path:
