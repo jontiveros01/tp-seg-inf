@@ -20,6 +20,10 @@ def qr(uuid: uuid.UUID):
 
     img = qr_obj.make_image(fill_color="black", back_color="white")
 
-    result_file = fdialog.asksaveasfile()
+    result_path = fdialog.asksaveasfilename(
+        defaultextension=".png",
+        filetypes=[("PNG image", "*.png")]
+    )
 
-    img.save(result_file)
+    if result_path:
+        img.save(result_path)
