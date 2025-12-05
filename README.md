@@ -37,10 +37,11 @@ Do not forget to apply code formatter: `black . && isort .`
 
 The system supports multiple types of honeytokens, each with different customizations or parameters.
 
-| Token Type   | Command                  | Parameters                                |
-|--------------|--------------------------|-------------------------------------------|
-| `QR`         | `generate qr`            | `--message -m`                            |
-| `PDF`        | `generate pdf`           | -                                         |
+| Token Type   | Command                  | Parameters                                | Values                                     |
+|--------------|--------------------------|-------------------------------------------|--------------------------------------------|
+| `QR`         | `generate qr`            | `--message -m`                            | string                                     |
+| `PDF`        | `generate pdf`           | -                                         | -                                          |
+| `HTML`       | `generate html`          | `--strategy -s`                           | `fetch-script` `css-bg` `remote-css`       |
 
 ---
 
@@ -51,4 +52,7 @@ python3 -m cli.main generate qr -m "Page not found"
 
 # PDF token
 python3 -m cli.main generate pdf
+
+# HTML token
+python3 -m cli.main generate html -s remote-css
 ```
