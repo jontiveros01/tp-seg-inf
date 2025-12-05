@@ -3,7 +3,6 @@ import uuid
 
 from cli.settings import get_settings
 
-
 try:
     from pypdf import PdfReader, PdfWriter, generic
     from pypdf.generic import TextString

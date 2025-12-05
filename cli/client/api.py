@@ -1,3 +1,4 @@
+import uuid
 from typing import Optional
 
 import click
@@ -23,7 +24,7 @@ def register_token(token_type: TokenType, message: Optional[str] = None):
         response.raise_for_status()
         click.echo(f"🗃️ Token registered successfully")
 
-        return response.json()["token_uuid"]
+        return uuid.UUID(response.json()["token_uuid"])
 
     except requests.exceptions.RequestException as e:
         raise click.ClickException(f"❌ Failed to register token: {e}") from e

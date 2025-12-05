@@ -3,7 +3,6 @@ import click
 from cli.commands.generate import generate
 
 
-
 @click.group()
 def cli():
     """Honeytoken CLI"""
