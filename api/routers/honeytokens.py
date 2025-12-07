@@ -44,6 +44,7 @@ def save_json(path, data):
 class TokenRegister(BaseModel):
     token_type: str
     message: Optional[str] = None
+    custom_id: Optional[str] = None
 
 
 @router.post("/register")
@@ -51,10 +52,19 @@ async def register_token(token: TokenRegister):
     """
     Register a new honeytoken in the system
     """
-    new_token_uuid = str(uuid.uuid4())
     tokens_db = load_json(TOKENS_FILE)
 
-    tokens_db[new_token_uuid] = {
+    if token.custom_id:
+        if token.custom_id in tokens_db:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Token with ID '{token.custom_id}' already exists.",
+            )
+        new_token_id = token.custom_id
+    else:
+        new_token_id = str(uuid.uuid4())
+
+    tokens_db[new_token_id] = {
         "token_type": token.token_type,
         "registered_at": datetime.now(ARG_TZ).isoformat(),
         "triggered": False,
@@ -63,14 +73,14 @@ async def register_token(token: TokenRegister):
 
     save_json(TOKENS_FILE, tokens_db)
     logger.info(
-        f"🍯 Token type {token.token_type} registered successfully with UUID {new_token_uuid}"
+        f"🍯 Token type {token.token_type} registered successfully with ID {new_token_id}"
     )
 
-    return {"status": "registered", "token_uuid": new_token_uuid}
+    return {"status": "registered", "token_id": new_token_id}
 
 
-@router.get("/alert/{token_uuid}")
-async def alert_token_accessed(token_uuid: str, request: Request):
+@router.get("/alert/{token_id}")
+async def alert_token_accessed(token_id: str, request: Request):
     """
     Endpoint triggered when someone access the honeytoken
     """
@@ -83,7 +93,7 @@ async def alert_token_accessed(token_uuid: str, request: Request):
         client_ip = request.headers["x-forwarded-for"].split(",")[0].strip()
 
     alert = {
-        "token_uuid": token_uuid,
+        "token_id": token_id,
         "accessed_from_ip": client_ip,
         "accessed_at": datetime.now(ARG_TZ).isoformat(),
         "user_agent": request.headers.get("user-agent", "unknown"),
@@ -94,17 +104,17 @@ async def alert_token_accessed(token_uuid: str, request: Request):
     alerts_db.append(alert)
     save_json(ALERTS_FILE, alerts_db)
 
-    token_info = tokens_db.get(token_uuid)
+    token_info = tokens_db.get(token_id)
 
     if token_info:
-        tokens_db[token_uuid]["triggered"] = True
-        tokens_db[token_uuid]["last_trigger"] = alert["accessed_at"]
+        tokens_db[token_id]["triggered"] = True
+        tokens_db[token_id]["last_trigger"] = alert["accessed_at"]
         save_json(TOKENS_FILE, tokens_db)
 
     logger.warning("=" * 70)
     logger.warning("🚨 ¡ALERT! HONEY TOKEN ACTIVE 🚨")
     logger.warning("=" * 70)
-    logger.warning(f"Token UUID:      {token_uuid}")
+    logger.warning(f"Token ID:      {token_id}")
     logger.warning(f"IP Access:       {client_ip}")
     logger.warning(f"Timestamp:       {alert['accessed_at']}")
     logger.warning(f"User-Agent:      {alert['user_agent']}")

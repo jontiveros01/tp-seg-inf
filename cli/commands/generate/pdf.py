@@ -13,11 +13,14 @@ import uuid
     required=True,
     help="Honeytoken injection strategy",
 )
-def generate_pdf(strategy):
+def generate_pdf(ctx, strategy):
     click.echo("Generating PDF honeytoken...")
 
     token_uuid = uuid.uuid4()
 
-    if pdf(token_uuid, strategy):
-        register_token(TokenType.PDF, token_uuid)
-        click.echo(f"PDF honeytoken generated with UUID: {token_uuid}")
+    cid = ctx.obj.get("cid")
+    token_uuid = register_token(TokenType.PDF, cid=cid)
+
+    pdf(token_uuid, strategy)
+
+    click.echo(f"PDF honeytoken generated with UUID: {token_uuid}")

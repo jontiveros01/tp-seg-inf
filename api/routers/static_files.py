@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/static-files", tags=["Static Files"])
 
 
-@router.get("/honey-css/{token_uuid}")
-async def honeytoken_css(token_uuid: str):
-    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{token_uuid}"
+@router.get("/honey-css/{token_id}")
+async def honeytoken_css(token_id: str):
+    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{token_id}"
 
     css = f"""
 body::before {{

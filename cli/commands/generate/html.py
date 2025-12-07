@@ -13,11 +13,14 @@ import uuid
     required=True,
     help="Honeytoken injection strategy",
 )
-def generate_html(strategy: str):
-    click.echo("Generating HTML honeytoken...")
+@click.pass_context
+def generate_html(ctx, strategy: str):
 
     token_uuid = uuid.uuid4()
 
-    if html(token_uuid, strategy):
-        register_token(TokenType.HTML, token_uuid)
-        click.echo(f"HTML honeytoken generated with UUID: {token_uuid}")
+    cid = ctx.obj.get("cid")
+    token_uuid = register_token(TokenType.HTML, cid=cid)
+
+    html(token_uuid, strategy)
+
+    click.echo(f"🍯 HTML honeytoken generated with UUID: {token_uuid}")

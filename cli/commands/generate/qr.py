@@ -7,11 +7,13 @@ import uuid
 
 @click.command()
 @click.option("--message", "-m", help="Message or payload to embed (QR)")
-def generate_qr(message):
-    click.echo("Generating QR honeytoken...")
-
+@click.pass_context
+def generate_qr(ctx, message: str):
     token_uuid = uuid.uuid4()
 
-    if qr(token_uuid):
-        register_token(TokenType.QR, token_uuid, message)
-        click.echo(f"QR honeytoken generated with UUID: {token_uuid}")
+    cid = ctx.obj.get("cid")
+    token_uuid = register_token(TokenType.QR, message, cid)
+
+    qr(token_uuid)
+
+    click.echo(f"🍯 QR honeytoken generated with UUID: {token_uuid}")
