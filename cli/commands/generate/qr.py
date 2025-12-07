@@ -7,12 +7,14 @@ from cli.token_strategies.qr import qr
 
 @click.command()
 @click.option("--message", "-m", help="Message or payload to embed (QR)")
-def generate_qr(message):
+@click.pass_context
+def generate_qr(ctx, message: str):
     """Generate a QR honeytoken"""
 
     click.echo("🔄 Generating QR honeytoken...")
 
-    token_uuid = register_token(TokenType.QR, message)
+    cid = ctx.obj.get("cid")
+    token_uuid = register_token(TokenType.QR, message, cid)
 
     qr(token_uuid)
 

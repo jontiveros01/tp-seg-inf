@@ -6,9 +6,12 @@ from cli.commands.generate.qr import generate_qr
 
 
 @click.group()
-def generate():
+@click.option("--cid", help="Custom id")
+@click.pass_context
+def generate(ctx, cid):
     """Generate different types of honeytokens"""
-    pass
+    ctx.ensure_object(dict)
+    ctx.obj["cid"] = cid
 
 
 generate.add_command(generate_qr, name="qr")

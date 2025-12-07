@@ -1,5 +1,4 @@
 import tkinter.filedialog as fdialog
-import uuid
 
 from cli.settings import get_settings
 
@@ -12,12 +11,12 @@ except ImportError:
     )
 
 
-def pdf(uuid: uuid):
+def pdf(token_id: str):
     """
     Modifies an existing PDF to execute a JavaScript payload on open and ping the server.
     """
 
-    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{uuid}"
+    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{token_id}"
 
     js_payload = f"""
     try {{

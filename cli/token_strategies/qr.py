@@ -1,5 +1,4 @@
 import tkinter.filedialog as fdialog
-import uuid
 from pathlib import Path
 
 import qrcode
@@ -7,9 +6,9 @@ import qrcode
 from cli.settings import get_settings
 
 
-def qr(uuid: uuid.UUID):
+def qr(token_id: str):
     """Generates a QR honeytoken"""
-    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{uuid}"
+    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{token_id}"
 
     qr_obj = qrcode.QRCode(
         version=1,

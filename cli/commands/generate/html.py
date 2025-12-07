@@ -13,12 +13,14 @@ from cli.token_strategies.html import html
     required=True,
     help="Honeytoken injection strategy",
 )
-def generate_html(strategy: str):
+@click.pass_context
+def generate_html(ctx, strategy: str):
     """Generate an HTML honeytoken"""
 
     click.echo("🔄 Generating HTML honeytoken...")
 
-    token_uuid = register_token(TokenType.HTML)
+    cid = ctx.obj.get("cid")
+    token_uuid = register_token(TokenType.HTML, cid=cid)
 
     html(token_uuid, strategy)
 

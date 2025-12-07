@@ -1,5 +1,4 @@
 import tkinter.filedialog as fdialog
-import uuid
 from pathlib import Path
 
 from cli.settings import get_settings
@@ -26,13 +25,13 @@ def _inject_before_body_end(html: str, snippet: str) -> str:
     return html + "\n" + snippet
 
 
-def _strategy_remote_css(original_html: str, token_uuid: uuid.UUID) -> str:
-    css_url = f"{get_settings().API_BASE_URL}/api/static-files/honey-css/{token_uuid}"
+def _strategy_remote_css(original_html: str, token_id: str) -> str:
+    css_url = f"{get_settings().API_BASE_URL}/api/static-files/honey-css/{token_id}"
     return _inject_external_css(original_html, css_url)
 
 
-def _strategy_fetch_script(original_html: str, token_uuid: uuid.UUID) -> str:
-    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{token_uuid}"
+def _strategy_fetch_script(original_html: str, token_id: str) -> str:
+    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{token_id}"
     snippet = f"""
 <script>
 fetch("{alert_url}").catch(()=>{{}});
@@ -41,9 +40,10 @@ fetch("{alert_url}").catch(()=>{{}});
     return _inject_before_body_end(original_html, snippet)
 
 
-def _strategy_css_bg(original_html: str, token_uuid: uuid.UUID) -> str:
-    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{token_uuid}"
-    element_id = f"htkn_{token_uuid.hex[:8]}"
+def _strategy_css_bg(original_html: str, token_id: str) -> str:
+    alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{token_id}"
+    safe_id = token_id.replace("-", "")[:8]
+    element_id = f"htkn_{safe_id}"
 
     snippet = f"""
 <style>
@@ -63,7 +63,7 @@ STRATEGIES = {
 }
 
 
-def html(token_uuid: uuid.UUID, html_strategy: str):
+def html(token_id: str, html_strategy: str):
     """
     Modifies an existing HTML based on the selected strategy.
     """
@@ -83,7 +83,7 @@ def html(token_uuid: uuid.UUID, html_strategy: str):
         original_html = base_html_file.read()
 
         strategy_fn = STRATEGIES[html_strategy]
-        modified_html = strategy_fn(original_html, token_uuid)
+        modified_html = strategy_fn(original_html, token_id)
 
         print("Honeytoken HTML generated. Select save location")
         result_file = fdialog.asksaveasfile(defaultextension=".html")
