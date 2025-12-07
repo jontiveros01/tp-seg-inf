@@ -6,11 +6,13 @@ from cli.token_strategies.svg import svg
 import uuid
 
 @click.command()
-def generate_svg():
+@click.pass_context
+def generate_svg(ctx):
     click.echo("Generating SVG honeytoken...")
 
-    token_uuid = uuid.uuid4()
+    cid = ctx.obj.get("cid")
+    token_uuid = register_token(TokenType.SVG, cid)
 
-    if svg(token_uuid):
-        register_token(TokenType.SVG, token_uuid)
-        click.echo(f"SVG honeytoken generated with UUID: {token_uuid}")
+    svg(token_uuid)
+
+    click.echo(f"SVG honeytoken generated with UUID: {token_uuid}")

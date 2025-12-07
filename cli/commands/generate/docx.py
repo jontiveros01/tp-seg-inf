@@ -13,11 +13,13 @@ import uuid
     required=True,
     help="Honeytoken injection strategy",
 )
-def generate_docx(strategy):
+@click.pass_context
+def generate_docx(ctx, strategy):
     click.echo("Generating DOCX honeytoken...")
 
-    token_uuid = uuid.uuid4()
+    cid = ctx.obj.get("cid")
+    token_uuid = register_token(TokenType.DOCX, cid)
 
-    if docx(token_uuid, strategy):
-        register_token(TokenType.DOCX, token_uuid)
-        click.echo(f"DOCX honeytoken generated with UUID: {token_uuid}")
+    docx(token_uuid, strategy)
+        
+    click.echo(f"DOCX honeytoken generated with UUID: {token_uuid}")

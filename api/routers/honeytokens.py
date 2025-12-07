@@ -9,13 +9,14 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 from uuid import UUID
+from resources import DOTX_BYTES, PDF_ICON_BYTES
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Response
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/tokens", tags=["Honeytokens"])
+router = APIRouter(tags=["Honeytokens"])
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -47,7 +48,7 @@ class TokenRegister(BaseModel):
     custom_id: Optional[str] = None
 
 
-@router.post("/register")
+@router.post("/api/tokens/register")
 async def register_token(token: TokenRegister):
     """
     Register a new honeytoken in the system
@@ -73,14 +74,16 @@ async def register_token(token: TokenRegister):
 
     save_json(TOKENS_FILE, tokens_db)
     logger.info(
-        f"🍯 Token type {token.token_type} registered successfully with ID {new_token_id}"
+        f"Token type {token.token_type} registered successfully with ID {new_token_id}"
     )
 
     return {"status": "registered", "token_id": new_token_id}
 
 
-@router.get("/alert/{token_id}")
-async def alert_token_accessed(token_id: str, request: Request):
+@router.get("/api/tokens/alert/{token_id}")
+@router.api_route("/resources/{token_id}", methods=["GET", "POST"])
+@router.api_route("/resources/{token_id}/{filename}", methods=["GET", "POST"])
+async def alert_token_accessed(token_id: str, request: Request, filename = None):
     """
     Endpoint triggered when someone access the honeytoken
     """
@@ -112,7 +115,7 @@ async def alert_token_accessed(token_id: str, request: Request):
         save_json(TOKENS_FILE, tokens_db)
 
     logger.warning("=" * 70)
-    logger.warning("🚨 ¡ALERT! HONEY TOKEN ACTIVE 🚨")
+    logger.warning("¡ALERT! HONEY TOKEN ACTIVE")
     logger.warning("=" * 70)
     logger.warning(f"Token ID:      {token_id}")
     logger.warning(f"IP Access:       {client_ip}")
@@ -122,14 +125,15 @@ async def alert_token_accessed(token_id: str, request: Request):
         logger.warning(f"Token type:      {token_info['token_type']}")
         logger.warning(f"Message:         {token_info.get('message', 'N/A')}")
     else:
-        logger.warning("⚠️  Token not found in database")
+        logger.warning("Token not found in database")
     logger.warning("=" * 70)
 
-    return {
-        "status": "ok",
-        "message": (
-            token_info.get("message", "Registered Access")
-            if token_info
-            else "Registered Access"
-        ),
-    }
+    if filename != None:
+        if filename.endswith(".dotm") or filename.endswith(".dotx"):
+            return Response(content=DOTX_BYTES, media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.template")
+        if filename.endswith(".png"):
+            return Response(content=PDF_ICON_BYTES, media_type="image/png")
+    if request.method == "POST" and token_info['token_type'] == "pdf":
+        return Response(content=b"<html><body>Form Submitted</body></html>", media_type="text/html")
+
+    return Response(status_code=200)

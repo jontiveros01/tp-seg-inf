@@ -9,16 +9,17 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 from uuid import UUID
+from resources import PDF_ICON_BYTES
 
 from fastapi import APIRouter, Response
 from settings import get_settings
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/static-files", tags=["Static Files"])
+router = APIRouter(tags=["Static Files"])
 
 
-@router.get("/honey-css/{token_id}")
+@router.get("/api/static-files/honey-css/{token_id}")
 async def honeytoken_css(token_id: str):
     alert_url = f"{get_settings().API_BASE_URL}/api/tokens/alert/{token_id}"
 
@@ -34,3 +35,7 @@ body::before {{
 }}
 """
     return Response(css, media_type="text/css")
+
+@router.get("/favicon.ico")
+async def browser_favico():
+    return PDF_ICON_BYTES

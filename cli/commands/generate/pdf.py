@@ -13,10 +13,9 @@ import uuid
     required=True,
     help="Honeytoken injection strategy",
 )
+@click.pass_context
 def generate_pdf(ctx, strategy):
     click.echo("Generating PDF honeytoken...")
-
-    token_uuid = uuid.uuid4()
 
     cid = ctx.obj.get("cid")
     token_uuid = register_token(TokenType.PDF, cid=cid)

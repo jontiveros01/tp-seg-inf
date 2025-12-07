@@ -11,7 +11,7 @@ from cli.settings import get_settings
 def register_token(
     token_type: TokenType, message: Optional[str] = None, cid: Optional[str] = None
 ):
-    click.echo(f"📥 Registering token in server...")
+    click.echo(f"Registering token in server...")
     try:
         register_payload = {
             "token_type": token_type,

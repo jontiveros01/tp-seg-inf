@@ -6,12 +6,13 @@ from cli.token_strategies.epub import epub
 import uuid
 
 @click.command()
-
-def generate_epub():
+@click.pass_context
+def generate_epub(ctx):
     click.echo("Generating EPUB honeytoken...")
 
-    token_uuid = uuid.uuid4()
-
-    if epub(token_uuid):
-        register_token(TokenType.EPUB, token_uuid)
-        click.echo(f"EPUB honeytoken generated with UUID: {token_uuid}")
+    cid = ctx.obj.get("cid")
+    token_uuid = register_token(TokenType.EPUB, cid)
+    
+    epub(token_uuid)
+        
+    click.echo(f"EPUB honeytoken generated with UUID: {token_uuid}")
