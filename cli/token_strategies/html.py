@@ -88,12 +88,12 @@ def html(token_uuid: uuid.UUID, html_strategy: str):
         print("Honeytoken HTML generated. Select save location")
         result_file = fdialog.asksaveasfile(defaultextension=".html")
 
-        if result_file is None:
-            print("Save cancelled, aborting.")
-            return
+        if result_file is None: return
 
         result_file.write(modified_html)
         print("HTML honeytoken created successfully.")
+        return True
 
     except Exception as e:
-        print(f"Error modifying HTML: {e}")
+        print(f"Error generating honeytoken: {e}")
+        return False

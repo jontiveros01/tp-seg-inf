@@ -3,7 +3,7 @@ import click
 from cli.client.api import register_token
 from cli.enums.token_type import TokenType
 from cli.token_strategies.html import html
-
+import uuid
 
 @click.command()
 @click.option(
@@ -14,12 +14,10 @@ from cli.token_strategies.html import html
     help="Honeytoken injection strategy",
 )
 def generate_html(strategy: str):
-    """Generate an HTML honeytoken"""
+    click.echo("Generating HTML honeytoken...")
 
-    click.echo("🔄 Generating HTML honeytoken...")
+    token_uuid = uuid.uuid4()
 
-    token_uuid = register_token(TokenType.HTML)
-
-    html(token_uuid, strategy)
-
-    click.echo(f"🍯 HTML honeytoken generated with UUID: {token_uuid}")
+    if html(token_uuid, strategy):
+        register_token(TokenType.HTML, token_uuid)
+        click.echo(f"HTML honeytoken generated with UUID: {token_uuid}")

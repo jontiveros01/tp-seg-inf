@@ -9,6 +9,7 @@ fastapi==0.118.2
 h11==0.16.0
 idna==3.10
 isort==6.1.0
+lxml==6.0.2
 mypy_extensions==1.1.0
 packaging==25.0
 pathspec==0.12.1
