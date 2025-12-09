@@ -28,7 +28,7 @@ def register_token(
         response.raise_for_status()
         click.echo(f"Token registered successfully")
 
-        return response.json()["status"] == "ok"
+        return response.json()["status"] == "registered"
 
     except requests.exceptions.HTTPError as e:
         status = response.status_code
