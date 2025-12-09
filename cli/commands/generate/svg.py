@@ -1,6 +1,6 @@
 import click
 
-from cli.client.api import register_token
+from cli.client.api import register_token, get_new_id
 from cli.enums.token_type import TokenType
 from cli.token_strategies.svg import svg
 import uuid
@@ -11,8 +11,10 @@ def generate_svg(ctx):
     click.echo("Generating SVG honeytoken...")
 
     cid = ctx.obj.get("cid")
-    token_uuid = register_token(TokenType.SVG, cid)
+    token_uuid = get_new_id()
 
-    svg(token_uuid)
-
-    click.echo(f"SVG honeytoken generated with UUID: {token_uuid}")
+    if svg(token_uuid):
+        if register_token(TokenType.SVG, token_uuid, cid):
+            click.echo(f"SVG honeytoken generated with UUID: {token_uuid}")
+        else:
+            click.echo(f"Failed to register honeytoken")

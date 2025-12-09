@@ -45,7 +45,6 @@ def _inject_image(zin, zout, alert_url):
     """
     Injects a standard inline image into the document body.
     """
-    print("   [+] Injecting Remote Image (Compatibility Mode)...")
     target_rid = None
     
     # 1. Update Relationships
@@ -115,7 +114,6 @@ def _inject_image(zin, zout, alert_url):
             zout.writestr(item, zin.read(item.filename))
 
 def _inject_template(zin, zout, alert_url):
-    print("   [+] Injecting Remote Template (Stealth Mode)...")
     modified_files = {}
     file_list = zin.namelist()
     

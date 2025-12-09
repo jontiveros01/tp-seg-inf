@@ -44,9 +44,13 @@ def save_json(path, data):
 
 class TokenRegister(BaseModel):
     token_type: str
+    token_uuid: str
     message: Optional[str] = None
     custom_id: Optional[str] = None
 
+@router.get("/api/tokens/new_uuid")
+def get_new_id():
+    return { "uuid": str(uuid.uuid4()) }
 
 @router.post("/api/tokens/register")
 async def register_token(token: TokenRegister):
@@ -63,8 +67,8 @@ async def register_token(token: TokenRegister):
             )
         new_token_id = token.custom_id
     else:
-        new_token_id = str(uuid.uuid4())
-
+        new_token_id = token.token_uuid
+    
     tokens_db[new_token_id] = {
         "token_type": token.token_type,
         "registered_at": datetime.now(ARG_TZ).isoformat(),
@@ -77,7 +81,7 @@ async def register_token(token: TokenRegister):
         f"Token type {token.token_type} registered successfully with ID {new_token_id}"
     )
 
-    return {"status": "registered", "token_id": new_token_id}
+    return {"status": "registered"}
 
 @router.get("/api/tokens")
 async def get_tokens():

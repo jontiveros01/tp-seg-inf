@@ -36,6 +36,6 @@ body::before {{
 """
     return Response(css, media_type="text/css")
 
-@router.get("/favicon.ico")
+@router.get("api/tokens/resources/{token_uuid}/favicon.ico")
 async def browser_favico():
     return PDF_ICON_BYTES

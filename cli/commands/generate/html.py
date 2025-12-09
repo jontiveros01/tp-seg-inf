@@ -1,6 +1,6 @@
 import click
 
-from cli.client.api import register_token
+from cli.client.api import register_token, get_new_id
 from cli.enums.token_type import TokenType
 from cli.token_strategies.html import html
 import uuid
@@ -17,8 +17,10 @@ import uuid
 def generate_html(ctx, strategy: str):
 
     cid = ctx.obj.get("cid")
-    token_uuid = register_token(TokenType.HTML, cid=cid)
+    token_uuid = get_new_id()
 
-    html(token_uuid, strategy)
-
-    click.echo(f"HTML honeytoken generated with UUID: {token_uuid}")
+    if html(token_uuid, strategy):
+        if register_token(TokenType.HTML, token_uuid, cid=cid):
+            click.echo(f"HTML honeytoken generated with UUID: {token_uuid}")
+        else:
+            click.echo(f"Failed to register honeytoken")

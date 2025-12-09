@@ -1,6 +1,6 @@
 import click
 
-from cli.client.api import register_token
+from cli.client.api import register_token, get_new_id
 from cli.enums.token_type import TokenType
 from cli.token_strategies.qr import qr
 import uuid
@@ -12,8 +12,10 @@ def generate_qr(ctx, message: str):
     click.echo("Generating QR honeytoken...")
 
     cid = ctx.obj.get("cid")
-    token_uuid = register_token(TokenType.QR, message, cid)
+    token_uuid = get_new_id()
 
-    qr(token_uuid)
-
-    click.echo(f"QR honeytoken generated with UUID: {token_uuid}")
+    if qr(token_uuid):
+        if register_token(TokenType.QR, token_uuid, message, cid):
+            click.echo(f"QR honeytoken generated with UUID: {token_uuid}")
+        else:
+            click.echo(f"Failed to register honeytoken")

@@ -7,8 +7,13 @@ from fastapi.responses import FileResponse   # <--- Importar esto
 from routers.honeytokens import router as honeytokens_router
 from routers.static_files import router as static_files_router
 import os
+import sys
+import asyncio
 
 setup_logging()
+
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 app = FastAPI(
     title="Honeytokens Manager API",
@@ -29,6 +34,8 @@ app.include_router(static_files_router)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
+
+
 
 if not os.path.exists(STATIC_DIR):
     os.makedirs(STATIC_DIR)
