@@ -79,6 +79,15 @@ async def register_token(token: TokenRegister):
 
     return {"status": "registered", "token_id": new_token_id}
 
+@router.get("/api/tokens")
+async def get_tokens():
+    """Retorna todos los tokens registrados"""
+    return load_json(TOKENS_FILE)
+
+@router.get("/api/alerts")
+async def get_alerts():
+    """Retorna todas las alertas registradas"""
+    return load_json(ALERTS_FILE)
 
 @router.get("/api/tokens/alert/{token_id}")
 @router.api_route("/resources/{token_id}", methods=["GET", "POST"])

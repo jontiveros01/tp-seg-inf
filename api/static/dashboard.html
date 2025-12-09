@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TokenSnare Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; }
+        .nav-tabs .nav-link.active { font-weight: bold; border-top: 3px solid #0d6efd; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">🛡️ TokenSnare Dashboard</span>
+    </div>
+</nav>
+
+<div class="container">
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button">📊 General</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tokens-tab" data-bs-toggle="tab" data-bs-target="#tokens" type="button">🗎 Tokens</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="alerts-tab" data-bs-toggle="tab" data-bs-target="#alerts" type="button">🚨 Alertas</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        
+        <div class="tab-pane fade show active" id="home" role="tabpanel">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Tokens Registrados</h5>
+                            <h1 class="display-4" id="totalTokens">0</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card text-white bg-danger">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Alertas Recibidas</h5>
+                            <h1 class="display-4" id="totalAlerts">0</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Historial de Alertas</h5>
+                    <canvas id="alertsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tokens" role="tabpanel">
+            <div class="card">
+                <div class="card-body">
+                    <input type="text" id="searchTokens" class="form-control mb-3" placeholder="🔍 Buscar por ID, tipo o mensaje...">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha Registro</th>
+                                    <th>Mensaje</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tokensTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="alerts" role="tabpanel">
+            <div class="card">
+                <div class="card-body">
+                    <input type="text" id="searchAlerts" class="form-control mb-3" placeholder="🔍 Buscar por IP, Token ID o User Agent...">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Token ID</th>
+                                    <th>IP Origen</th>
+                                    <th>User Agent</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alertsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let tokensData = {};
+    let alertsData = [];
+
+    // Cargar datos al iniciar
+    document.addEventListener("DOMContentLoaded", async () => {
+        await loadData();
+    });
+
+    async function loadData() {
+        try {
+            const resTokens = await fetch('/api/tokens');
+            tokensData = await resTokens.json();
+
+            const resAlerts = await fetch('/api/alerts');
+            alertsData = await resAlerts.json();
+
+            renderDashboard();
+            renderTokens(tokensData);
+            renderAlerts(alertsData);
+        } catch (error) {
+            console.error("Error cargando datos:", error);
+        }
+    }
+
+    function renderDashboard() {
+        const tokenCount = Object.keys(tokensData).length;
+        const alertCount = alertsData.length;
+
+        document.getElementById('totalTokens').innerText = tokenCount;
+        document.getElementById('totalAlerts').innerText = alertCount;
+        const alertsByDate = {};
+        alertsData.forEach(alert => {
+            const date = alert.accessed_at.split('T')[0];
+            alertsByDate[date] = (alertsByDate[date] || 0) + 1;
+        });
+
+        const sortedDates = Object.keys(alertsByDate).sort();
+        const dataValues = sortedDates.map(date => alertsByDate[date]);
+
+        const ctx = document.getElementById('alertsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: sortedDates,
+                datasets: [{
+                    label: 'Alertas por día',
+                    data: dataValues,
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { responsive: true }
+        });
+    }
+
+    function renderTokens(data) {
+        const tbody = document.getElementById('tokensTableBody');
+        tbody.innerHTML = '';
+        
+        const tokensArray = Object.entries(data).map(([id, info]) => ({id, ...info}));
+        
+        tokensArray.forEach(token => {
+            const row = `<tr>
+                <td><small class="text-muted">${token.id}</small></td>
+                <td><span class="badge bg-secondary">${token.token_type}</span></td>
+                <td>${new Date(token.registered_at).toLocaleString()}</td>
+                <td>${token.message || '-'}</td>
+                <td>${token.triggered ? '<span class="badge bg-danger">COMPROMETIDO</span>' : '<span class="badge bg-success">Activo</span>'}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function renderAlerts(data) {
+        const tbody = document.getElementById('alertsTableBody');
+        tbody.innerHTML = '';
+        
+        const sortedAlerts = [...data].sort((a, b) => new Date(b.accessed_at) - new Date(a.accessed_at));
+
+        sortedAlerts.forEach(alert => {
+            const row = `<tr>
+                <td>${new Date(alert.accessed_at).toLocaleString()}</td>
+                <td><small>${alert.token_id}</small></td>
+                <td><strong>${alert.accessed_from_ip}</strong></td>
+                <td><small class="text-truncate d-inline-block" style="max-width: 300px;" title="${alert.user_agent}">${alert.user_agent}</small></td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    document.getElementById('searchTokens').addEventListener('keyup', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = {};
+        Object.entries(tokensData).forEach(([id, info]) => {
+            if (id.includes(term) || info.token_type.includes(term) || (info.message && info.message.toLowerCase().includes(term))) {
+                filtered[id] = info;
+            }
+        });
+        renderTokens(filtered);
+    });
+
+    // Buscador de Alertas
+    document.getElementById('searchAlerts').addEventListener('keyup', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = alertsData.filter(a => 
+            a.accessed_from_ip.includes(term) || 
+            a.token_id.includes(term) || 
+            a.user_agent.toLowerCase().includes(term)
+        );
+        renderAlerts(filtered);
+    });
+</script>
+
+</body>
+</html>
