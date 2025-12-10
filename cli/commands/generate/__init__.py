@@ -6,6 +6,7 @@ from cli.commands.generate.qr import generate_qr
 from cli.commands.generate.svg import generate_svg
 from cli.commands.generate.epub import generate_epub
 from cli.commands.generate.docx import generate_docx
+from cli.commands.generate.m3u import generate_m3u
 
 
 @click.group()
@@ -23,3 +24,4 @@ generate.add_command(generate_html, name="html")
 generate.add_command(generate_svg, name="svg")
 generate.add_command(generate_epub, name="epub")
 generate.add_command(generate_docx, name="docx")
+generate.add_command(generate_m3u, name="m3u")
