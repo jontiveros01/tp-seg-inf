@@ -8,3 +8,4 @@ class TokenType(StrEnum):
     SVG = "svg"
     EPUB = "epub"
     DOCX = "docx"
+    M3U = "m3u"
