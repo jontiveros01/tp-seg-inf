@@ -17,10 +17,10 @@ import uuid
 def generate_html(ctx, strategy: str):
 
     cid = ctx.obj.get("cid")
-    token_uuid = get_new_id()
+    token_id = get_new_id() if cid is None else cid
 
-    if html(token_uuid, strategy):
-        if register_token(TokenType.HTML, token_uuid, cid=cid):
-            click.echo(f"HTML honeytoken generated with UUID: {token_uuid}")
+    if html(token_id, strategy):
+        if register_token(TokenType.HTML, token_id, cid=cid):
+            click.echo(f"HTML honeytoken generated with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")

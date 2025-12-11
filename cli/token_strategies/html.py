@@ -26,8 +26,8 @@ def _inject_before_body_end(html: str, snippet: str) -> str:
 
 
 def _strategy_remote_css(original_html: str, token_id: str) -> str:
-    css_url = f"{get_settings().API_BASE_URL}/api/static-files/honey-css/{token_id}"
-    return _inject_external_css(original_html, css_url)
+    fake_css_url = f"{get_settings().API_BASE_URL}/resources/{token_id}"
+    return _inject_external_css(original_html, fake_css_url)
 
 
 def _strategy_fetch_script(original_html: str, token_id: str) -> str:
