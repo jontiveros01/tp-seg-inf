@@ -12,7 +12,7 @@ There are two ways to run the API locally: using python (with a virtual environm
 1. Create venv: `python3 -m venv venv`
 2. Activate venv: 
 - On Windows, run: `venv\Scripts\activate.bat`
-- On Linux/MacOS, run: `./venv/bin/activate` 
+- On Linux/MacOS, run: `source ./venv/bin/activate` 
 3. Install dependencies: `pip install -r requirements.txt`
 4. Run application: `python api/main.py`
 
