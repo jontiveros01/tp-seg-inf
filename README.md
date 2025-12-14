@@ -46,8 +46,8 @@ The system supports multiple types of honeytokens, each with different customiza
 
 ### Examples of use
 ```bash
-# QR token with optional message
-python3 -m cli.main generate qr -m "Page not found"
+# QR token with redirect url to google
+python3 -m cli.main generate qr -r "https://google.com"
 
 # PDF token
 python3 -m cli.main generate pdf
