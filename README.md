@@ -14,7 +14,7 @@ There are two ways to run the API locally: using python (with a virtual environm
 - On Windows, run: `venv\Scripts\activate.bat`
 - On Linux/MacOS, run: `source ./venv/bin/activate` 
 3. Install dependencies: `pip install -r requirements.txt`
-4. Run application: `python api/main.py`
+4. Run application: `python3 api/main.py`
 
 #### 🐳 Using Docker
 1. Build docker image: `docker build -t honeytokens-manager-api .`
