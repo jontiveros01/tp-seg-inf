@@ -12,6 +12,8 @@ from uuid import UUID
 from resources import DOTX_BYTES, PDF_ICON_BYTES
 
 from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi.responses import RedirectResponse
+from starlette.status import HTTP_302_FOUND
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -47,6 +49,7 @@ class TokenRegister(BaseModel):
     token_uuid: str
     message: Optional[str] = None
     custom_id: Optional[str] = None
+    redirect_url: Optional[str] = None
 
 @router.get("/api/tokens/new_uuid")
 def get_new_id():
@@ -74,6 +77,7 @@ async def register_token(token: TokenRegister):
         "registered_at": datetime.now(ARG_TZ).isoformat(),
         "triggered": False,
         "message": token.message,
+        "redirect_url": token.redirect_url,
     }
 
     save_json(TOKENS_FILE, tokens_db)
@@ -146,5 +150,12 @@ async def alert_token_accessed(token_id: str, request: Request, filename = None)
             return Response(content=PDF_ICON_BYTES, media_type="image/png")
     if request.method == "POST" and token_info['token_type'] == "pdf":
         return Response(content=b"<html><body>Form Submitted</body></html>", media_type="text/html")
+    
+    redirect_url = token_info.get("redirect_url") if token_info else None
+    if redirect_url:
+        return RedirectResponse(
+            url=redirect_url,
+            status_code=HTTP_302_FOUND
+        )
 
     return Response(status_code=200)

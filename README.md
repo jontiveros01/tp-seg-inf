@@ -33,7 +33,7 @@ The system supports multiple types of honeytokens, each with different customiza
 
 | Token Type   | Command                  | Parameters                                | Values                                     |
 |--------------|--------------------------|-------------------------------------------|--------------------------------------------|
-| `QR`         | `generate qr`            | `--message -m`                            | string                                     |
+| `QR`         | `generate qr`            | `--message -m` `--redirect-url -r`        | string                                     |
 | `PDF`        | `generate pdf`           | `--strategy`                              | `link` `openaction`                        |
 | `HTML`       | `generate html`          | `--strategy -s`                           | `fetch-script` `css-bg` `remote-css`       |
 | `M3U`        | `generate m3u`           | `--format -f`                             | `m3u` `m3u8` `both`                        |

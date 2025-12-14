@@ -20,7 +20,7 @@ def generate_html(ctx, strategy: str):
     token_id = get_new_id() if cid is None else cid
 
     if html(token_id, strategy):
-        if register_token(TokenType.HTML, token_id, cid=cid):
+        if register_token(TokenType.HTML, token_id, cid=cid, redirect_url=None):
             click.echo(f"HTML honeytoken generated with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")

@@ -14,7 +14,7 @@ def generate_epub(ctx):
     token_id = get_new_id() if cid is None else cid
 
     if epub(token_id):
-        if register_token(TokenType.EPUB, token_id, cid):
+        if register_token(TokenType.EPUB, token_id, cid, redirect_url=None):
             click.echo(f"EPUB honeytoken generated with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")

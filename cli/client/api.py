@@ -9,7 +9,7 @@ from cli.settings import get_settings
 
 
 def register_token(
-    token_type: TokenType, token_uuid: str, message: Optional[str] = None, cid: Optional[str] = None
+    token_type: TokenType, token_uuid: str, message: Optional[str] = None, cid: Optional[str] = None, redirect_url: Optional[str] = None
 ):
     click.echo(f"Registering token in server...")
     try:
@@ -18,6 +18,7 @@ def register_token(
             "token_uuid": token_uuid,
             "message": message,
             "custom_id": cid,
+            "redirect_url": redirect_url,
         }
 
         response = requests.post(

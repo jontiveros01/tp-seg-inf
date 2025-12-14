@@ -14,7 +14,7 @@ def generate_svg(ctx):
     token_id = get_new_id() if cid is None else cid
 
     if svg(token_id):
-        if register_token(TokenType.SVG, token_id, cid):
+        if register_token(TokenType.SVG, token_id, cid, redirect_url=None):
             click.echo(f"SVG honeytoken generated with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")

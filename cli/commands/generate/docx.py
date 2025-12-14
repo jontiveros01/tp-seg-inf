@@ -21,7 +21,7 @@ def generate_docx(ctx, strategy):
     token_id = get_new_id() if cid is None else cid
 
     if docx(token_id, strategy):
-        if register_token(TokenType.DOCX, token_id, cid):
+        if register_token(TokenType.DOCX, token_id, cid, redirect_url=None):
             click.echo(f"DOCX honeytoken registered with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")

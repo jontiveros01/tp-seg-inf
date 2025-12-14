@@ -21,7 +21,7 @@ def generate_m3u(ctx, format):
     token_id = get_new_id() if cid is None else cid
 
     if m3u(token_id, format):
-        if register_token(TokenType.M3U, token_id, cid=cid):
+        if register_token(TokenType.M3U, token_id, cid=cid, redirect_url=None):
             click.echo(f"MP3 playlist honeytoken(s) registered with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")
