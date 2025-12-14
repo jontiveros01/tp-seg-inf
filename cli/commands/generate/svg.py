@@ -11,10 +11,10 @@ def generate_svg(ctx):
     click.echo("Generating SVG honeytoken...")
 
     cid = ctx.obj.get("cid")
-    token_uuid = get_new_id()
+    token_id = get_new_id() if cid is None else cid
 
-    if svg(token_uuid):
-        if register_token(TokenType.SVG, token_uuid, cid):
-            click.echo(f"SVG honeytoken generated with UUID: {token_uuid}")
+    if svg(token_id):
+        if register_token(TokenType.SVG, token_id, cid):
+            click.echo(f"SVG honeytoken generated with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")

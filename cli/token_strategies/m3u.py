@@ -66,7 +66,7 @@ def m3u(token_uuid, playlist_format):
         for filename in files_created:
             print(f"  • {filename}")
         print(f"\nHoneytoken UUID: {token_uuid}")
-        print(f"\n📝 Note: The playlist references: {original_filename}")
+        print(f"\nNote: The playlist references: {original_filename}")
         print("   Make sure this file exists in the same directory!")
         
         return True

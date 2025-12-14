@@ -18,10 +18,10 @@ def generate_pdf(ctx, strategy):
     click.echo("Generating PDF honeytoken...")
 
     cid = ctx.obj.get("cid")
-    token_uuid = get_new_id()
+    token_id = get_new_id() if cid is None else cid
 
-    if pdf(token_uuid, strategy):
-        if register_token(TokenType.PDF, token_uuid, cid=cid):
-            click.echo(f"PDF honeytoken generated with UUID: {token_uuid}")
+    if pdf(token_id, strategy):
+        if register_token(TokenType.PDF, token_id, cid=cid):
+            click.echo(f"PDF honeytoken generated with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")

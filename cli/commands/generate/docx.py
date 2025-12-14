@@ -18,10 +18,10 @@ def generate_docx(ctx, strategy):
     click.echo("Generating DOCX honeytoken...")
 
     cid = ctx.obj.get("cid")
-    token_uuid = get_new_id()
+    token_id = get_new_id() if cid is None else cid
 
-    if docx(token_uuid, strategy):
-        if register_token(TokenType.DOCX, token_uuid, cid):
-            click.echo(f"DOCX honeytoken registered with UUID: {token_uuid}")
+    if docx(token_id, strategy):
+        if register_token(TokenType.DOCX, token_id, cid):
+            click.echo(f"DOCX honeytoken registered with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")

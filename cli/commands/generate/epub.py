@@ -11,10 +11,10 @@ def generate_epub(ctx):
     click.echo("Generating EPUB honeytoken...")
 
     cid = ctx.obj.get("cid")
-    token_uuid = get_new_id()
-    
-    if epub(token_uuid):
-        if register_token(TokenType.EPUB, token_uuid, cid):
-            click.echo(f"EPUB honeytoken generated with UUID: {token_uuid}")
+    token_id = get_new_id() if cid is None else cid
+
+    if epub(token_id):
+        if register_token(TokenType.EPUB, token_id, cid):
+            click.echo(f"EPUB honeytoken generated with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")

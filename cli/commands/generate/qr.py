@@ -12,10 +12,10 @@ def generate_qr(ctx, message: str):
     click.echo("Generating QR honeytoken...")
 
     cid = ctx.obj.get("cid")
-    token_uuid = get_new_id()
+    token_id = get_new_id() if cid is None else cid
 
-    if qr(token_uuid):
-        if register_token(TokenType.QR, token_uuid, message, cid):
-            click.echo(f"QR honeytoken generated with UUID: {token_uuid}")
+    if qr(token_id):
+        if register_token(TokenType.QR, token_id, message, cid):
+            click.echo(f"QR honeytoken generated with ID: {token_id}")
         else:
             click.echo(f"Failed to register honeytoken")
